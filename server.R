@@ -120,7 +120,7 @@ shinyServer(function(input, output) {
 		t_perm <- -log10(pthresh(n_perm, input$nsnp))
 		t_bonf <- -log10(0.05/(input$nsnp*(input$nsnp-1)*0.5))
 
-		Parameters <- c("Number of SNPs", "Vg/Vp", "Power", "-log10(p) threshold", "Required sample size"),
+		Parameters <- c("Number of SNPs", "Vg/Vp", "Power", "-log10(p) threshold", "Required sample size")
 
 		v_bonf <- as.character(c(input$nsnp, input$pvar, 0.5, t_bonf, n_bonf))
 		v_perm <- as.character(c(input$nsnp, input$pvar, 0.5, t_perm, n_perm))
