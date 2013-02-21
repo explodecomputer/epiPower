@@ -3,7 +3,7 @@ library(shiny)
 shinyUI(
 	pageWithSidebar(
 
-		headerPanel("Calculate power for 2D epistatic scans"),
+		headerPanel("Calculate thresholds and power for 2D epistatic scans"),
 
 		sidebarPanel(
 
