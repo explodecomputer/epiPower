@@ -1,17 +1,12 @@
 epiPower
 ========
 
-### Calculate thresholds, sample sizes and power for epistatic searches using Bonferroni or permutation
-
-
 Summary
 -------
 
 This is an app built using the [shiny][0] package in `R` that performs the calculations for thresholds and sample sizes outlined in the paper:
 
-**Significance thresholds for the search for epistasis**
-Gibran Hemani, Joseph Powell, Sara Knott, Chris Haley
-*Under submission*
+*Gibran Hemani, Joseph Powell, Sara Knott, Chris Haley* **Significance thresholds for the search for epistasis** *Under submission*
 
 
 Instructions
