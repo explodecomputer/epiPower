@@ -122,10 +122,10 @@ shinyServer(function(input, output) {
 
 		Parameters <- c("Number of SNPs", "Vg/Vp", "Power", "-log10(p) threshold", "Required sample size")
 
-		v_bonf <- as.character(c(input$nsnp, input$pvar, 0.5, t_bonf, n_bonf))
-		v_perm <- as.character(c(input$nsnp, input$pvar, 0.5, t_perm, n_perm))
+		v_bonf <- as.character(c(input$nsnp, input$pvar, 0.5, round(t_bonf,2), round(n_bonf)))
+		v_perm <- as.character(c(input$nsnp, input$pvar, 0.5, round(t_perm,2), round(n_perm)))
 
-		return(data.frame(Parameters = Parameters, Bonferroni = v_bond, Permutation = v_perm))
+		return(data.frame(Parameters = Parameters, Bonferroni = v_bonf, Permutation = v_perm))
 
 	})
 
@@ -134,37 +134,4 @@ shinyServer(function(input, output) {
 	})
 
 })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

@@ -1,23 +1,29 @@
 library(shiny)
 
 shinyUI(
-	bootstrapPage(
+	pageWithSidebar(
 
-		numericInput(
-			inputID = "pvar", 
-			label = "Proportion of variance explained:", 
-			0.01, min=0.00001, max=0.99999),
+		headerPanel("Calculate power for 2D epistatic scans"),
 
-		numericInput(
-			inputID = "nsnp", 
-			label = "Number of SNPs in SNP chip:", 
-			500000, min=50000),
+		sidebarPanel(
+			numericInput(
+				inputId = "pvar", 
+				label = "Proportion of variance explained:", 
+				value=0.01, min=0.00001, max=0.99999),
 
-		numericInput(
-			inputID = "grp", 
-			label = "Number of groups (e.g. A+D+I = 9):", 
-			9, min=2),
+			numericInput(
+				inputId = "nsnp", 
+				label = "Number of SNPs in SNP chip:", 
+				value=500000, min=50000),
 
-		tableOutput("values")
+			numericInput(
+				inputId = "grp", 
+				label = "Number of groups (e.g. A+D+I = 9):", 
+				value=9, min=2)
+		),
+
+		mainPanel(
+			tableOutput("values")
+		)
 	)
 )
