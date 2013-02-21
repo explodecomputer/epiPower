@@ -104,6 +104,22 @@ bonf.minsamplesize <- function(pvar, nsnp, n=NULL, grp)
 
 shinyServer(function(input, output) {
 
+
+	thresholdValues <- reactive(function() {
+
+		# Calculate permutation and bonferroni thresholds
+
+		t_perm <- -log10(pthresh(input$nid, input$nsnp))
+		t_bonf <- -log10(0.05/(input$nsnp*(input$nsnp-1)*0.5))
+
+		nom <- c("Bonferroni", "Permutation")
+		val <- as.character(c(round(t_bonf, 2), round(t_perm, 2)))
+
+		return(data.frame(Method = nom, Threshold = val))		
+
+	})
+
+
 	powerValues <- reactive(function() {
 	
 		# Assume only want to know minimum sample size...
@@ -131,6 +147,10 @@ shinyServer(function(input, output) {
 
 	output$values <- reactiveTable(function() {
 		powerValues()
+	})
+
+	output$threshold <- reactiveTable(function() {
+		thresholdValues()
 	})
 
 })
