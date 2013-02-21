@@ -6,7 +6,7 @@ Summary
 
 This is an app built using the [shiny][0] package in `R` that performs the calculations for thresholds and sample sizes outlined in the paper:
 
-*Gibran Hemani, Joseph Powell, Sara Knott, Chris Haley* **Significance thresholds for the search for epistasis** *Under submission*
+*Hemani G, Powell J, Knott S, Haley S*, **Significance thresholds for epistasic searches**, *Under submission*
 
 
 Instructions
@@ -25,7 +25,7 @@ Now you are ready to run the app:
 Acknowledgements
 ----------------
 
-Thanks to [Konstantin Shakhbazov][2] for help! 
+Thanks to [Kostya][2] for help! 
 
 [0]:(http://www.rstudio.com/shiny/)
 [1]:(http://cran.r-project.org)
