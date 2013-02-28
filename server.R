@@ -6,7 +6,7 @@ library(ggplot2)
 #######################
 
 # Permutation
-pthresh <- function(n, m)
+pthresh <- function(n, m, ntrait=1)
 {
 	s1 <- 0.0258
 	s2 <- 1.72
@@ -15,13 +15,18 @@ pthresh <- function(n, m)
 	a <- 12.68
 
 	thresh <- a - a/(s1 * exp(log(n)/s2) + s3 * exp(log(m)/s4))
-	return(10^-thresh)
+
+	# effective number of tests:
+	et <- 0.05 / 10^-thresh
+	thresh <- 0.05 / (et*ntrait)
+
+	return(thresh)
 }
 
 # Bonferroni
-bthresh <- function(m)
+bthresh <- function(m, ntrait=1)
 {
-	0.05/(m*(m-1)/2)
+	0.05/(ntrait*m*(m-1)/2)
 }
 
 ########################
@@ -97,15 +102,15 @@ power2 <- function (groups = NULL, n = NULL, between.var = NULL, within.var = NU
 ###############
 
 # Calculate power for range of variances and given nsnp, n, grp
-bonf.power <- function(pvar, nsnp, n, grp) {
-	thresh <- bthresh(nsnp)
+bonf.power <- function(pvar, nsnp, n, grp, ntrait=1) {
+	thresh <- bthresh(nsnp, ntrait)
 	a <- power.anova.test(groups=grp, n=n/grp, between.var=pvar, within.var=1, sig.level=thresh, power=NULL)
 	return(a$power)
 }
 
-perm.power <- function(pvar, nsnp, n, grp)
+perm.power <- function(pvar, nsnp, n, grp, ntrait=1)
 {
-	thresh <- pthresh(nsnp, n)
+	thresh <- pthresh(n, nsnp, ntrait)
 	a <- power.anova.test(groups=grp, n=n/grp, between.var=pvar, within.var=1, sig.level=thresh, power
 		=NULL)
 	return(a$power)
@@ -113,17 +118,17 @@ perm.power <- function(pvar, nsnp, n, grp)
 
 
 # EM algorithm to iterate through power2 to match threshold N with f-test N
-perm.minsamplesize <- function(pvar, nsnp, pow, grp, n1=1000)
+perm.minsamplesize <- function(pvar, nsnp, pow, grp, n1=1000, ntrait=1)
 {
 	oldn <- n1
-	thresh <- pthresh(oldn, nsnp)
+	thresh <- pthresh(oldn, nsnp, ntrait)
 	newn <- power2(groups=grp, n=NULL, between.var=pvar, within.var=1, sig.level=thresh, power=pow)$n*grp
 	return(
 		if(round(newn) == round(oldn))
 		{
 			newn
 		} else {
-			perm.minsamplesize(pvar, nsnp, pow, grp, newn)
+			perm.minsamplesize(pvar, nsnp, pow, grp, newn, ntrait)
 		}
 	)
 }
@@ -131,24 +136,24 @@ perm.minsamplesize <- function(pvar, nsnp, pow, grp, n1=1000)
 
 # Calculate thresholds and sample sizes based on bonferroni correction
 # No iteration required because thresholds are independent of sample size
-bonf.minsamplesize <- function(pvar, nsnp, pow, grp, n1=NULL)
+bonf.minsamplesize <- function(pvar, nsnp, pow, grp, n1=NULL, ntrait=1)
 {
-	thresh <- bthresh(nsnp)
+	thresh <- bthresh(nsnp, ntrait)
 	newn <- power2(groups=grp, n=NULL, between.var=pvar, within.var=1, sig.level=thresh, power=pow)$n*grp
 	return(newn)
 }
 
 
-bonf.pvar <- function(nsnp, n, grp, pow)
+bonf.pvar <- function(nsnp, n, grp, pow, ntrait=1)
 {
-	thresh <- bthresh(nsnp)
+	thresh <- bthresh(nsnp, ntrait)
 	pvar <- power2(groups=grp, n=n/grp, between.var=NULL, within.var=1, sig.level=thresh, power=pow)$between.var
 	return(pvar)
 }
 
-perm.pvar <- function(nsnp, n, grp, pow)
+perm.pvar <- function(nsnp, n, grp, pow, ntrait=1)
 {
-	thresh <- pthresh(n, nsnp)
+	thresh <- pthresh(n, nsnp, ntrait)
 	pvar <- power2(groups=grp, n=n/grp, between.var=NULL, within.var=1, sig.level=thresh, power=pow)$between.var
 	return(pvar)
 }
@@ -175,8 +180,8 @@ shinyServer(function(input, output) {
 
 		# Calculate permutation and bonferroni thresholds
 
-		t_perm <- -log10(pthresh(input$nid1, input$nsnp1))
-		t_bonf <- -log10(bthresh(input$nsnp1))
+		t_perm <- -log10(pthresh(input$nid1, input$nsnp1, input$ntrait1))
+		t_bonf <- -log10(bthresh(input$nsnp1, input$ntrait1))
 
 		nom <- c("Bonferroni", "Permutation")
 		val <- as.character(c(round(t_bonf, 2), round(t_perm, 2)))
@@ -193,16 +198,18 @@ shinyServer(function(input, output) {
 			pvar = input$pvar2, 
 			nsnp = input$nsnp2, 
 			pow  = input$upow2,
-			grp  = input$grp2)
+			grp  = input$grp2,
+			ntrait = input$ntrait2)
 
 		n_bonf <- bonf.minsamplesize(
 			pvar = input$pvar2, 
 			nsnp = input$nsnp2,
 			pow  = input$upow2, 
-			grp  = input$grp2)
+			grp  = input$grp2,
+			ntrait = input$ntrait2)
 
-		t_perm <- -log10(pthresh(n_perm, input$nsnp2))
-		t_bonf <- -log10(bthresh(input$nsnp2))
+		t_perm <- -log10(pthresh(n_perm, input$nsnp2, input$ntrait2))
+		t_bonf <- -log10(bthresh(input$nsnp2, input$ntrait2))
 
 		ret <- data.frame(
 			Method = c("Bonferroni", "Permutation"),
@@ -222,6 +229,7 @@ shinyServer(function(input, output) {
 		grp  = input$grp3
 		upow = input$upow3
 		pvar = input$pvar3
+		ntrait = input$ntrait3
 
 		brange <- c(
 			bonf.pvar(nsnp, n, grp, 0.01),
@@ -238,14 +246,14 @@ shinyServer(function(input, output) {
 		dat <- data.frame(
 			eff=c(eff, eff), 
 			pow=c(
-				bonf.power(eff, nsnp, n, grp),
-				perm.power(eff, nsnp, n, grp)), 
+				bonf.power(eff, nsnp, n, grp, ntrait),
+				perm.power(eff, nsnp, n, grp, ntrait)), 
 			thresh=rep(c("Bonferroni", "Permutation"), each=length(eff))
 		)
 
 		powerlines <- data.frame(
 			Method=c("Bonferroni", "Permutation"),
-			Threshold=as.character(signif(-log10(c(bthresh(nsnp), pthresh(n, nsnp))), 4)),
+			Threshold=as.character(signif(-log10(c(bthresh(nsnp, ntrait), pthresh(n, nsnp, ntrait))), 4)),
 			Effect = as.character(signif(pvar, 2)),
 			Power = as.character(signif(c(
 				with(subset(dat, thresh=="Bonferroni"),
@@ -272,13 +280,14 @@ shinyServer(function(input, output) {
 		n    = input$nid3
 		grp  = input$grp3
 		upow = input$upow3
+		ntrait = input$ntrait3
 
 		brange <- c(
-			bonf.pvar(nsnp, n, grp, 0.01),
-			bonf.pvar(nsnp, n, grp, 0.99))
+			bonf.pvar(nsnp, n, grp, 0.01, ntrait),
+			bonf.pvar(nsnp, n, grp, 0.99, ntrait))
 		prange <- c(
-			perm.pvar(nsnp, n, grp, 0.01),
-			perm.pvar(nsnp, n, grp, 0.99))
+			perm.pvar(nsnp, n, grp, 0.01, ntrait),
+			perm.pvar(nsnp, n, grp, 0.99, ntrait))
 		arange <- c(
 			min(c(brange, prange)), 
 			max(c(brange, prange)))
@@ -288,8 +297,8 @@ shinyServer(function(input, output) {
 		dat <- data.frame(
 			eff=c(eff, eff), 
 			pow=c(
-				bonf.power(eff, nsnp, n, grp),
-				perm.power(eff, nsnp, n, grp)), 
+				bonf.power(eff, nsnp, n, grp, ntrait),
+				perm.power(eff, nsnp, n, grp, ntrait)), 
 			thresh=rep(c("Bonferroni", "Permutation"), each=length(eff))
 		)
 
