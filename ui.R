@@ -7,43 +7,45 @@ shinyUI(
 		headerPanel("epiPower"),
 
 		sidebarPanel(
+			h3("Guide to parameters"),
 			HTML(knit2html(text=
-"Genome-wide association studies can be extended to two dimensionals (test each SNP against each other SNP) to exhaustively mine for genetic interactions (**epistasis**). For example, see [epiGPU](http://sourceforge.net/projects/epigpu/).
+"**Number of SNPs**: This is for human studies using common SNPs, the minimum number of SNPs should be 300,000
 
-This app can be used to calculate appropriate thresholds and various power calculations for such analyses. It is based on the work outlined in:
+**Sample size**: How many genotyped and phenotyped individuals are in the study
 
-**Statistical thresholds for epistatic searches**. Hemani G, Wei W, Powell JE, Knott SA, Haley CS. *Under review*"
-			)),
-			h4("Guide to parameters:"),
-			wellPanel(
-				h5("Number of SNPs"),
-				helpText("This is for human studies using common SNPs, the minimum number of SNPs should be 300,000")
-			),
-			wellPanel(
-				h5("Sample size"),
-				helpText("How many genotyped and phenotyped individuals are in the study")
-			),
-			wellPanel(
-				h5("Number of parameters"),
-				helpText("This relates to the model complexity. A standard GWAS has 2 parameters (the additive A effect and the mean). The joint effect of two SNPs can have up to 9 parameters (A1 + A2 + D1 + D2 + A1A2 + A1D2 + A2D1 + D1D2 + mean, where D represents the dominance effect).")
-			),
-			wellPanel(
-				h5("Effect size"),
-				helpText("This is the proportion of the phenotypic variance explained by the SNP pair")
-			),
-			wellPanel(
-				h5("Power"),
-				helpText("The statistical power is the probability that the test will reject the null hypothesis when it is false.")
-			),
-			wellPanel(
-				h5("Number of traits"),
-				helpText("The number of independent traits being analysed.")
-			)
+**Number of parameters**: This relates to the model complexity. A standard GWAS has 2 parameters (the additive A effect and the mean). The joint effect of two SNPs can have up to 9 parameters (A1 + A2 + D1 + D2 + A1A2 + A1D2 + A2D1 + D1D2 + mean, where D represents the dominance effect).
 
+**Effect size**: This is the proportion of the phenotypic variance explained by the SNP pair
+
+**Power**: The statistical power is the probability that the test will reject the null hypothesis when it is false.
+
+**Number of traits**: The number of independent traits being analysed."
+			))
 		),
 
 		mainPanel(
 			tabsetPanel(
+				tabPanel("About",
+					wellPanel(
+						HTML(knit2html(text=
+"### Summary
+
+Genome-wide association studies can be extended to two dimensions (test each SNP against each other SNP) to exhaustively mine for genetic interactions (**epistasis**). For example, see [epiGPU](http://sourceforge.net/projects/epigpu/) for software that can perform this kind of analysis.
+
+Where should statistical thresholds be set to control false discovery rates for 2D scans? Because SNPs are correlated, correcting for the exact number of tests performed (*i.e.* using Bonferroni) is overly stringent.
+
+Use this app to calculate appropriate thresholds and various power calculations for such analyses. It is based on the work outlined in:
+
+**Statistical thresholds for epistatic searches**. Hemani G, Wei W, Powell JE, Knott SA, Haley CS. *Under review*"
+						))
+					),
+					wellPanel(
+						HTML(knit2html(text=
+"The source code for this app is maintained at [https://github.com/explodecomputer/epiPower](https://github.com/explodecomputer/epiPower)"
+						))
+					)
+				),
+
 				tabPanel("Threshold calculator", 
 
 					h4("Input"),
