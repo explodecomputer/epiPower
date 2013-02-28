@@ -8,8 +8,7 @@ This is an app built using the [shiny][0] package in R that performs the calcula
 
 *Hemani G, Wei W, Powell JE, Knott SA, Haley CS*, **Significance thresholds for epistasic searches**, *Under submission*
 
-It is hosted on the beta server provided by [RStudio][3]:
-[glimmer.rstudio.com/gibhemani/epiPower][4]
+It is hosted on the beta server provided by [RStudio][3]. Check it out here: [glimmer.rstudio.com/gibhemani/epiPower][4]
 
 
 Features
@@ -39,8 +38,8 @@ Acknowledgements
 
 Thanks to [Kostya][2] for help! 
 
-[0]:(http://www.rstudio.com/shiny/)
-[1]:(http://cran.r-project.org)
-[2]:(https://github.com/kn3in)
-[3]:(http://rstudio.org)
-[4]:(http://glimmer.rstudio.com/gibhemani/epiPower/)
+ [0]:http://www.rstudio.com/shiny/
+ [1]:http://cran.r-project.org
+ [2]:https://github.com/kn3in
+ [3]:http://rstudio.org
+ [4]:http://glimmer.rstudio.com/gibhemani/epiPower/
