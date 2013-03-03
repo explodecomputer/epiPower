@@ -1,3 +1,16 @@
+
+headerPanel_mod <- function(title, subtitle, windowTitle=title) {    
+	tagList(
+		tags$head(tags$title(windowTitle)),
+		div(class="span12", style="padding: 10px 0px;",
+			h1(title),
+			if(!is.null(subtitle)) h3(subtitle)
+		)
+	)
+}
+
+
+
 #######################
 # Threshold functions #
 #######################

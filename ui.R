@@ -1,13 +1,14 @@
 library(shiny)
 library(knitr)
+source("functions.R")
 
 shinyUI(
 	pageWithSidebar(
 
-		headerPanel("epiPower"),
+		headerPanel("epiPower", "epiPower"),
 
 		sidebarPanel(
-			h3("Guide to parameters"),
+			h3("Study design for 2D GWAS"),
 			HTML(knit2html(text=
 "**Number of SNPs**: This is for human studies using common SNPs, the minimum number of SNPs should be 300,000
 
@@ -19,32 +20,14 @@ shinyUI(
 
 **Power**: The statistical power is the probability that the test will reject the null hypothesis when it is false.
 
-**Number of traits**: The number of independent traits being analysed."
+**Number of traits**: The number of independent traits being analysed.
+
+**Threshold**: $-\\log_{10} p$ values for family-wise false discovery rate of $\\alpha = 0.05$"
 			))
 		),
 
 		mainPanel(
 			tabsetPanel(
-				tabPanel("About",
-					wellPanel(
-						HTML(knit2html(text=
-"### Summary
-
-Genome-wide association studies can be extended to two dimensions (test each SNP against each other SNP) to exhaustively mine for genetic interactions (**epistasis**). For example, see [epiGPU](http://sourceforge.net/projects/epigpu/) for software that can perform this kind of analysis.
-
-Where should statistical thresholds be set to control false discovery rates for 2D scans? Because SNPs are correlated, correcting for the exact number of tests performed (*i.e.* using Bonferroni) is overly stringent.
-
-Use this app to calculate appropriate thresholds and various power calculations for such analyses. It is based on the work outlined in:
-
-**Statistical thresholds for epistatic searches**. Hemani G, Wei W, Powell JE, Knott SA, Haley CS. *Under review*"
-						))
-					),
-					wellPanel(
-						HTML(knit2html(text=
-"The source code for this app is maintained at [https://github.com/explodecomputer/epiPower](https://github.com/explodecomputer/epiPower)"
-						))
-					)
-				),
 
 				tabPanel("Threshold calculator", 
 
@@ -179,6 +162,26 @@ Use this app to calculate appropriate thresholds and various power calculations 
 								animate = TRUE)
 						),
 						plotOutput("powerplot")
+					)
+				),
+				tabPanel("About",
+					wellPanel(
+						HTML(knit2html(text=
+"### Summary
+
+Genome-wide association studies can be extended to two dimensions (test each SNP against each other SNP) to exhaustively mine for genetic interactions (**epistasis**). For example, see [epiGPU](http://sourceforge.net/projects/epigpu/) for software that can perform this kind of analysis.
+
+Where should statistical thresholds be set to control false discovery rates for 2D scans? Because SNPs are correlated, correcting for the exact number of tests performed (*i.e.* using Bonferroni) is overly stringent.
+
+Use this app to calculate appropriate thresholds and various power calculations for such analyses. It is based on the work outlined in:
+
+**Statistical thresholds for epistatic searches**. Hemani G, Wei W, Powell JE, Knott SA, Haley CS. *Under review*"
+						))
+					),
+					wellPanel(
+						HTML(knit2html(text=
+"The source code for this app is maintained at [https://github.com/explodecomputer/epiPower](https://github.com/explodecomputer/epiPower)"
+						))
 					)
 				)
 			)
